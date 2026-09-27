@@ -1,0 +1,43 @@
+{
+  "info": {
+    "name": "FastAPI JWT Authentication Microservice",
+    "description": "Registration, login, and authenticated task CRUD requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "http://127.0.0.1:8000"},
+    {"key": "token", "value": ""},
+    {"key": "task_id", "value": "1"}
+  ],
+  "item": [
+    {
+      "name": "Register",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"strong-password\"\n}"}, "url": {"raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"]}}
+    },
+    {
+      "name": "Login",
+      "event": [{"listen": "test", "script": {"exec": ["pm.test('Login succeeded', function () { pm.response.to.have.status(200); });", "pm.collectionVariables.set('token', pm.response.json().access_token);"]}}],
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"strong-password\"\n}"}, "url": {"raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"]}}
+    },
+    {
+      "name": "Create Task",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\n  \"title\": \"Read the docs\",\n  \"description\": \"Review the API documentation\"\n}"}, "url": {"raw": "{{base_url}}/tasks", "host": ["{{base_url}}"], "path": ["tasks"]}}
+    },
+    {
+      "name": "List Tasks",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": {"raw": "{{base_url}}/tasks", "host": ["{{base_url}}"], "path": ["tasks"]}}
+    },
+    {
+      "name": "Get Task",
+      "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": {"raw": "{{base_url}}/tasks/{{task_id}}", "host": ["{{base_url}}"], "path": ["tasks", "{{task_id}}"]}}
+    },
+    {
+      "name": "Update Task",
+      "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}, {"key": "Authorization", "value": "Bearer {{token}}"}], "body": {"mode": "raw", "raw": "{\n  \"completed\": true\n}"}, "url": {"raw": "{{base_url}}/tasks/{{task_id}}", "host": ["{{base_url}}"], "path": ["tasks", "{{task_id}}"]}}
+    },
+    {
+      "name": "Delete Task",
+      "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token}}"}], "url": {"raw": "{{base_url}}/tasks/{{task_id}}", "host": ["{{base_url}}"], "path": ["tasks", "{{task_id}}"]}}
+    }
+  ]
+}
